@@ -33,16 +33,56 @@ export class Ball extends cc.Component {
                 // 右边碰到了
                 console.log("BBBB");
 
-                this.speedX = -10;
+                this.speedX= -4;
                 this.speed = cc.v2(this.speedX, this.speedY);
 
+                return;
+            } else if(Math.abs(vec.x) === Math.abs(vec.y)){
+                if(vec.y> 0){
+                    this.speedY = -2;
+                    this.speedX= -4;
+                } else {
+                    this.speedY = 2;
+                    this.speedX= -4;
+                }
+                this.speed = cc.v2(this.speedX, this.speedY);
+            } else {
+                if (vec.y > 0) { // 上边碰到了
+                    console.log("CCCC111");
+                    this.speedY = -2;
+                    this.speed = cc.v2(this.speedX, this.speedY);
+                    return;
+                } else { // 下边碰到了
+                    console.log("DDDD22222");
+                    this.speedY = 2;
+                    this.speed = cc.v2(this.speedX, this.speedY);
+                    return;
+                }
+            }
+        } else if(vec.x < 0) {
+            if (-vec.x > Math.abs(vec.y)) {
+                // 左边碰到了
+                console.log("AAAA");
+                this.speedX= 4;
+                this.speed = cc.v2(this.speedX, this.speedY);
+
+                return;
+            } else if(Math.abs(vec.y)=== Math.abs(vec.x)){
+                if(vec.y> 0){
+                    this.speedY = -2;
+                    this.speedX= 4;
+                } else {
+                    this.speedY = 2;
+                    this.speedX= 4;
+                }
+                this.speed = cc.v2(this.speedX, this.speedY);
                 return;
             } else {
                 if (vec.y > 0) {
                     // 上边碰到了
-                    console.log("CCCC111");
+                    console.log("CCCC222");
 
-                    this.speedY = -5;
+                    this.speedY = -2;
                     this.speed = cc.v2(this.speedX, this.speedY);
 
                     return;
@@ -51,7 +91,8 @@ export class Ball extends cc.Component {
                     // 下边碰到了
                     console.log("DDDD222");
 
-                    this.speedY = 5;
+                    other.node.color = cc.color(255,0,0);
+                    this.speedY = 2;
                     this.speed = cc.v2(this.speedX, this.speedY);
 
                     return;
@@ -59,33 +100,15 @@ export class Ball extends cc.Component {
                 }
             }
         } else {
-            if (-vec.x > Math.abs(vec.y)) {
-                // 左边碰到了
-                console.log("AAAA");
-                this.speedX = 10;
-                this.speed = cc.v2(this.speedX, this.speedY);
-
+            //x === 0
+            if(vec.y > 0){ //上面碰到了
+                this.speedY = -2;
+                this.speed = cc.v2(this.speedX,this.speedY);
                 return;
-            } else {
-                if (vec.y > 0) {
-                    // 上边碰到了
-                    console.log("CCCC222");
-
-                    this.speedY = -5;
-                    this.speed = cc.v2(this.speedX, this.speedY);
-
-                    return;
-
-                } else {
-                    // 下边碰到了
-                    console.log("DDDD222");
-
-                    this.speedY = 5;
-                    this.speed = cc.v2(this.speedX, this.speedY);
-
-                    return;
-
-                }
+            } else if(vec.y < 0){ //下面碰到了
+                this.speedY = 2;
+                this.speed = cc.v2(this.speedX,this.speedY);
+                return;                
             }
         }
 
@@ -142,14 +165,14 @@ export class Ball extends cc.Component {
         // const deltaX: number = otherWorldPos.x - meWorldPos.x;
         // if (deltaX > 11) {
         //     console.log("AAA");
-        //     this.speedX = -10;
+        //     this.speedX= -4;
         //     this.speed = cc.v2(this.speedX, this.speedY);
 
         //     return;
         // }
         // if (deltaX < -11) {
         //     console.log("BBB");
-        //     this.speedX = 10;
+        //     this.speedX= 4;
         //     this.speed = cc.v2(this.speedX, this.speedY);
 
         //     return;
@@ -157,14 +180,14 @@ export class Ball extends cc.Component {
         // const deltaY: number = otherWorldPos.y - meWorldPos.y;
         // if (deltaY > 11) {
         //     console.log("CCC");
-        //     this.speedY = -5;
+        //     this.speedY = -2;
         //     this.speed = cc.v2(this.speedX, this.speedY);
 
         //     return;
         // }
         // if (deltaY < -11) {
         //     console.log("DDD");
-        //     this.speedY = 5;
+        //     this.speedY = 2;
         //     this.speed = cc.v2(this.speedX, this.speedY);
 
         //     return;
