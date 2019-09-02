@@ -12,9 +12,10 @@ export class Ball extends cc.Component {
         // this.node.getComponent(cc.CircleCollider).
     }
     public update(): void {
-        this.node.setPosition(this.node.getPosition().add(this.speed));
+        // this.node.setPosition(this.node.getPosition().add(this.speed));
     }
     public onCollisionEnter(other: cc.Collider, me: cc.Collider): void {
+        return;
         // this.speed = cc.v2(0, 0);
         // console.log(other, me);
         if (other === this.lastOther) {
@@ -33,17 +34,17 @@ export class Ball extends cc.Component {
                 // 右边碰到了
                 console.log("BBBB");
 
-                this.speedX= -4;
+                this.speedX = -4;
                 this.speed = cc.v2(this.speedX, this.speedY);
 
                 return;
-            } else if(Math.abs(vec.x) === Math.abs(vec.y)){
-                if(vec.y> 0){
+            } else if (Math.abs(vec.x) === Math.abs(vec.y)) {
+                if (vec.y > 0) {
                     this.speedY = -2;
-                    this.speedX= -4;
+                    this.speedX = -4;
                 } else {
                     this.speedY = 2;
-                    this.speedX= -4;
+                    this.speedX = -4;
                 }
                 this.speed = cc.v2(this.speedX, this.speedY);
             } else {
@@ -59,21 +60,21 @@ export class Ball extends cc.Component {
                     return;
                 }
             }
-        } else if(vec.x < 0) {
+        } else if (vec.x < 0) {
             if (-vec.x > Math.abs(vec.y)) {
                 // 左边碰到了
                 console.log("AAAA");
-                this.speedX= 4;
+                this.speedX = 4;
                 this.speed = cc.v2(this.speedX, this.speedY);
 
                 return;
-            } else if(Math.abs(vec.y)=== Math.abs(vec.x)){
-                if(vec.y> 0){
+            } else if (Math.abs(vec.y) === Math.abs(vec.x)) {
+                if (vec.y > 0) {
                     this.speedY = -2;
-                    this.speedX= 4;
+                    this.speedX = 4;
                 } else {
                     this.speedY = 2;
-                    this.speedX= 4;
+                    this.speedX = 4;
                 }
                 this.speed = cc.v2(this.speedX, this.speedY);
                 return;
@@ -91,7 +92,7 @@ export class Ball extends cc.Component {
                     // 下边碰到了
                     console.log("DDDD222");
 
-                    other.node.color = cc.color(255,0,0);
+                    other.node.color = cc.color(255, 0, 0);
                     this.speedY = 2;
                     this.speed = cc.v2(this.speedX, this.speedY);
 
@@ -100,15 +101,15 @@ export class Ball extends cc.Component {
                 }
             }
         } else {
-            //x === 0
-            if(vec.y > 0){ //上面碰到了
+            // x === 0
+            if (vec.y > 0) { // 上面碰到了
                 this.speedY = -2;
-                this.speed = cc.v2(this.speedX,this.speedY);
+                this.speed = cc.v2(this.speedX, this.speedY);
                 return;
-            } else if(vec.y < 0){ //下面碰到了
+            } else if (vec.y < 0) { // 下面碰到了
                 this.speedY = 2;
-                this.speed = cc.v2(this.speedX,this.speedY);
-                return;                
+                this.speed = cc.v2(this.speedX, this.speedY);
+                return;
             }
         }
 

@@ -1,0 +1,6 @@
+D:\ball1\ball\ball\tools\bmfnt\ChineseCharCollector\ChineseCharCollector\bin\Debug\ChineseCharCollector.exe.config
+D:\ball1\ball\ball\tools\bmfnt\ChineseCharCollector\ChineseCharCollector\bin\Debug\ChineseCharCollector.exe
+D:\ball1\ball\ball\tools\bmfnt\ChineseCharCollector\ChineseCharCollector\bin\Debug\ChineseCharCollector.pdb
+D:\ball1\ball\ball\tools\bmfnt\ChineseCharCollector\ChineseCharCollector\obj\Debug\ChineseCharCollector.csprojResolveAssemblyReference.cache
+D:\ball1\ball\ball\tools\bmfnt\ChineseCharCollector\ChineseCharCollector\obj\Debug\ChineseCharCollector.exe
+D:\ball1\ball\ball\tools\bmfnt\ChineseCharCollector\ChineseCharCollector\obj\Debug\ChineseCharCollector.pdb
