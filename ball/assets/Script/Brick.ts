@@ -1,3 +1,6 @@
+import { WallManager } from "./WallManager";
+import { Wall } from "./Wall";
+
 const { ccclass, property } = cc._decorator;
 
 @ccclass
@@ -12,13 +15,18 @@ export class Brick extends cc.Component {
     }
     public onKick(): void {
         this.num--;
+        this.label.string = this.num.toString();
         if (this.num <= 0) {
             this.onZero();
             return;
         }
-        this.label.string = this.num.toString();
     }
     public onZero(): void {
+        // this.node.isValid = false;
+        const index = this.node.parent.getComponent(Wall).mChildrens.indexOf(this.node)
+        this.node.parent.getComponent(Wall).mChildrens[index] = undefined;
         this.node.destroy();
+        cc.find("Canvas/walls").getComponent(WallManager).needUpdate = true;
+        cc.find("Canvas/walls").getComponent(WallManager).needDisposeWall.push(this.node.parent.getComponent(Wall));
     }
 }
