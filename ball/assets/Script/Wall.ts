@@ -5,15 +5,17 @@ export class Wall extends cc.Component {
     @property
     public isOutWall: boolean = false;
     public mChildrens: cc.Node[] = [];
-    public mInitChildrenLength:number = 0;
-    public disposed:boolean = false;
+    public mInitChildrenLength: number = 0;
+    public disposed: boolean = false;
     public onLoad(): void {
         this.init();
     }
-    public init():void{
+    public init(): void {
         if (this.isOutWall) {
             return;
         }
+        this.getComponent(cc.PhysicsBoxCollider).size = cc.size(this.node.width, 30);
+        this.getComponent(cc.PhysicsBoxCollider).offset = cc.v2(this.node.width / 2, 0);
         this.getComponent(cc.Layout).enabled = false;
         this.mInitChildrenLength = this.node.children.length;
         for (let i: number = 0; i < this.mInitChildrenLength; i++) {
@@ -40,44 +42,45 @@ export class Wall extends cc.Component {
             this.mChildrens[index].emit("kick");
         }
     }
-    public dispose():void{
-        if(this.disposed){
+    public dispose(): void {
+        if (this.disposed) {
             return;
         }
         this.disposed = true;
-        let group:{nod:cc.Node,sourceIndex:number}[] = [];
-        const groupGroup:{nod:cc.Node,sourceIndex:number}[][] = [];
-        for(let i:number = 0;i< this.mInitChildrenLength;i++){
-            if(this.mChildrens[i] !== null && this.mChildrens[i] !== undefined && this.mChildrens[i].isValid === true && cc.isValid(this.mChildrens[i])){
-                group.push({nod:this.mChildrens[i],sourceIndex:i});
-            } else{
-                if(group.length > 0){
+        let group: { nod: cc.Node, sourceIndex: number }[] = [];
+        const groupGroup: { nod: cc.Node, sourceIndex: number }[][] = [];
+        for (let i: number = 0; i < this.mInitChildrenLength; i++) {
+            // tslint:disable-next-line:max-line-length
+            if (this.mChildrens[i] !== null && this.mChildrens[i] !== undefined && this.mChildrens[i].isValid === true && cc.isValid(this.mChildrens[i])) {
+                group.push({ nod: this.mChildrens[i], sourceIndex: i });
+            } else {
+                if (group.length > 0) {
                     groupGroup.push(group);
                     group = [];
                 }
             }
         }
-        if(group.length>0){
+        if (group.length > 0) {
             groupGroup.push(group);
         }
-        for(let i:number = 0;i< groupGroup.length;i++){
-            const template1 = cc.find("wallTemplate");
-            const template = cc.instantiate(template1);
+        for (let i: number = 0; i < groupGroup.length; i++) {
+            const template1: cc.Node = cc.find("wallTemplate");
+            const template: cc.Node = cc.instantiate(template1);
             template.setParent(cc.find("Canvas/walls"));
-            for(let j:number = 0;j<groupGroup[i].length;j++){
-                if(j === 0){
+            for (let j: number = 0; j < groupGroup[i].length; j++) {
+                if (j === 0) {
                     template.setPosition(
                         cc.v2(
                             groupGroup[i][j].nod.getPosition().x + groupGroup[i][j].nod.parent.getPosition().x,
                             groupGroup[i][j].nod.getPosition().y + groupGroup[i][j].nod.parent.getPosition().y)
-                        )
+                    );
                 }
                 groupGroup[i][j].nod.setParent(template);
-                groupGroup[i][j].nod.setPosition(cc.v2(j* 30,0));
+                groupGroup[i][j].nod.setPosition(cc.v2(j * 30, 0));
             }
             template.width = groupGroup[i].length * 30;
-            template.getComponent(cc.PhysicsBoxCollider).size = cc.size(template.width,30);
-            template.getComponent(cc.PhysicsBoxCollider).offset = cc.v2(template.width/2,0);
+            template.getComponent(cc.PhysicsBoxCollider).size = cc.size(template.width, 30);
+            template.getComponent(cc.PhysicsBoxCollider).offset = cc.v2(template.width / 2, 0);
             template.active = true;
         }
         this.node.destroy();

@@ -44,8 +44,8 @@
     },
     "_scale": {
       "__type__": "cc.Vec3",
-      "x": 0.6056967219483521,
-      "y": 0.6056967219483521,
+      "x": 0.596875,
+      "y": 0.596875,
       "z": 1
     },
     "_quat": {
@@ -13120,7 +13120,7 @@
     },
     "_position": {
       "__type__": "cc.Vec3",
-      "x": -131,
+      "x": 72,
       "y": 32,
       "z": 0
     },
@@ -13197,8 +13197,8 @@
     "_angularDamping": 0,
     "_linearVelocity": {
       "__type__": "cc.Vec2",
-      "x": 400,
-      "y": 300
+      "x": 0,
+      "y": 400
     },
     "_angularVelocity": 0,
     "_fixedRotation": false,
