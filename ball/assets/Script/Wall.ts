@@ -12,9 +12,17 @@ export class Wall extends cc.Component {
     }
     public init(): void {
         if (this.isOutWall) {
+            if (this.node.width > this.node.height) {
+                // 是横的,上下边框
+                this.getComponent(cc.PhysicsBoxCollider).size = cc.size(this.node.width, 14);
+            } else {
+                // 是竖的,左右边框
+                this.getComponent(cc.PhysicsBoxCollider).size = cc.size(14, this.node.height);
+                this.getComponent(cc.PhysicsBoxCollider).offset = cc.v2(0, -this.node.height / 2);
+            }
             return;
         }
-        this.getComponent(cc.PhysicsBoxCollider).size = cc.size(this.node.width, 30);
+        this.getComponent(cc.PhysicsBoxCollider).size = cc.size(this.node.width, 20);
         this.getComponent(cc.PhysicsBoxCollider).offset = cc.v2(this.node.width / 2, 0);
         this.getComponent(cc.Layout).enabled = false;
         this.mInitChildrenLength = this.node.children.length;
@@ -32,7 +40,7 @@ export class Wall extends cc.Component {
     public onBeginContact(contact: cc.PhysicsContact, selfCollider: cc.PhysicsBoxCollider, otherCollider: cc.PhysicsCircleCollider): void {
         // 如果可以不用获取世界坐标系下的点然后再转换到本地坐标系应该可以提高性能
         const contacktPointLocal: cc.Vec2 = this.node.convertToNodeSpaceAR(contact.getWorldManifold().points[0]);
-        let index: number = Math.floor(contacktPointLocal.x / 30);
+        let index: number = Math.floor(contacktPointLocal.x / 20);
         if (index < 0) {
             index = 0;
         } else if (index >= this.mChildrens.length) {
@@ -76,10 +84,10 @@ export class Wall extends cc.Component {
                     );
                 }
                 groupGroup[i][j].nod.setParent(template);
-                groupGroup[i][j].nod.setPosition(cc.v2(j * 30, 0));
+                groupGroup[i][j].nod.setPosition(cc.v2(j * 20, 0));
             }
-            template.width = groupGroup[i].length * 30;
-            template.getComponent(cc.PhysicsBoxCollider).size = cc.size(template.width, 30);
+            template.width = groupGroup[i].length * 20;
+            template.getComponent(cc.PhysicsBoxCollider).size = cc.size(template.width, 20);
             template.getComponent(cc.PhysicsBoxCollider).offset = cc.v2(template.width / 2, 0);
             template.active = true;
         }
