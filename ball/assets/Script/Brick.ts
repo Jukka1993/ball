@@ -8,7 +8,7 @@ export class Brick extends cc.Component {
 
     @property(cc.Label)
     private label: cc.Label = null;
-    private num: number = 3;
+    private num: number = 3000;
     public onLoad(): void {
         this.label.string = this.num.toString();
         this.changeLabelToNumLayer(); // 如果启动卡顿的话,可能需要分帧处理
