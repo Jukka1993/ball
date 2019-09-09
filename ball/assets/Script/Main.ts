@@ -2,9 +2,12 @@ const { ccclass, property } = cc._decorator;
 
 @ccclass
 export class Main extends cc.Component {
+    @property({ type: [cc.Node], displayName: "辅助球" })
+    public helpBallNode: cc.Node[] = [];
     private visualBoard: cc.Node = null;
     private touchBoard: cc.Node = null;
     private rigidBoard: cc.Node = null;
+    private beginBoard: cc.Node = null;
     public onLoad(): void {
         const manager: cc.PhysicsManager = cc.director.getPhysicsManager();
         manager.enabled = true;
@@ -14,11 +17,15 @@ export class Main extends cc.Component {
         this.visualBoard = cc.find("Canvas/VisualBoard");
         this.touchBoard = cc.find("Canvas/TouchBoard");
         this.rigidBoard = cc.find("Canvas/Board");
+        this.beginBoard = cc.find("Canvas/BeginTouchBoard");
+        this.beginBoard.on("click", this.onBeginBoard, this);
+        this.beginBoard.on(cc.Node.EventType.TOUCH_MOVE, this.onBeginMove, this);
+        this.beginBoard.on(cc.Node.EventType.TOUCH_START, this.onBeginMove, this);
         this.touchBoard.on(cc.Node.EventType.TOUCH_MOVE, this.onTouchMove, this);
-        this.touchBoard.on(cc.Node.EventType.TOUCH_END, this.onTouchEnd,this);
+        this.touchBoard.on(cc.Node.EventType.TOUCH_END, this.onTouchEnd, this);
     }
-    public onTouchEnd():void{
-        this.selectImg();
+    public onTouchEnd(): void {
+        // this.selectImg();
     }
     public update(): void {
         const deltaX: number = this.visualBoard.x - this.rigidBoard.x;
@@ -30,6 +37,12 @@ export class Main extends cc.Component {
             return;
         }
         this.rigidBoard.getComponent(cc.RigidBody).linearVelocity = cc.v2(effectiveX * 30, effectiveY * 30);
+    }
+    private onBeginMove(): void {
+
+    }
+    private onBeginBoard(): void {
+        this.beginBoard.active = false;
     }
     private onTouchMove(touch: cc.Event.EventTouch): void {
         const newX: number = this.visualBoard.x + touch.getDeltaX();
@@ -45,95 +58,95 @@ export class Main extends cc.Component {
         }
         this.visualBoard.setPosition(finalX, finalY);
     }
-    private selectImg():void{
+    private selectImg(): void {
         const canvas = document.createElement('canvas');
-        document.body.insertBefore(canvas,document.body.firstChild);
+        document.body.insertBefore(canvas, document.body.firstChild);
         // const image = document.createElement('image');
         canvas.width = 200;
         canvas.height = 200;
         const ctx = canvas.getContext('2d');
         // image
         const image: Image = new Image();
-        image.onload = function(){
-            ctx.drawImage(image,0,0,200,200);
+        image.onload = function () {
+            ctx.drawImage(image, 0, 0, 200, 200);
             var pixel = ctx.getImageData(15, 15, 1, 1);
             console.log(pixel);
             console.log(pixel.height);
             console.log(pixel.width);
             console.log(pixel.data);
-            for(let i:number = 0;i< pixel.data.length;i++){
-            console.log(pixel.data[i]);
+            for (let i: number = 0; i < pixel.data.length; i++) {
+                console.log(pixel.data[i]);
             }
             /*********************** */
             //todo
             let size = 1;
             let timer = setInterval(
-                ()=>{
+                () => {
                     size++;
-                    if(size > 15){
+                    if (size > 15) {
                         clearInterval(timer);
                         timer = null;
                     }
                     const width = 200;
                     const height = 200;
-                
+
                     // context.drawImage(img, 0, 0, width, height)
                     const imageData = ctx.getImageData(0, 0, width, height)
                     const pixels = imageData.data
-                
+
                     for (let x = 1; x < imageData.width / size; x++) {
-                    for (let y = 1; y < imageData.height / size; y++) {
-                        const tx = (size * x) - (size / 2)
-                        const ty = (size * y) - (size / 2)
-                        const pos = (Math.floor(ty - 1) * imageData.width * 4) + (Math.floor(tx -1) * 4)
-                        const red = pixels[pos]
-                        const green = pixels[pos+1]
-                        const blue = pixels[pos+2]
-                
-                        ctx.fillStyle = `rgb(${red}, ${green}, ${blue})`
-                        ctx.fillRect(tx, ty, size, size)
-                    }
+                        for (let y = 1; y < imageData.height / size; y++) {
+                            const tx = (size * x) - (size / 2)
+                            const ty = (size * y) - (size / 2)
+                            const pos = (Math.floor(ty - 1) * imageData.width * 4) + (Math.floor(tx - 1) * 4)
+                            const red = pixels[pos]
+                            const green = pixels[pos + 1]
+                            const blue = pixels[pos + 2]
+
+                            ctx.fillStyle = `rgb(${red}, ${green}, ${blue})`
+                            ctx.fillRect(tx, ty, size, size)
+                        }
                     }
 
-                },1000
+                }, 1000
             )
             // for(let size:number = 0;size< 15;i++){
-                // const width = 200;
-                // const height = 200;
-            
-                // // context.drawImage(img, 0, 0, width, height)
-                // const imageData = ctx.getImageData(0, 0, width, height)
-                // const pixels = imageData.data
-            
-                // for (let x = 1; x < imageData.width / size; x++) {
-                // for (let y = 1; y < imageData.height / size; y++) {
-                //     const tx = (size * x) - (size / 2)
-                //     const ty = (size * y) - (size / 2)
-                //     const pos = (Math.floor(ty - 1) * imageData.width * 4) + (Math.floor(tx -1) * 4)
-                //     const red = pixels[pos]
-                //     const green = pixels[pos+1]
-                //     const blue = pixels[pos+2]
-            
-                //     ctx.fillStyle = `rgb(${red}, ${green}, ${blue})`
-                //     ctx.fillRect(tx, ty, size, size)
-                // }
-                // }
+            // const width = 200;
+            // const height = 200;
+
+            // // context.drawImage(img, 0, 0, width, height)
+            // const imageData = ctx.getImageData(0, 0, width, height)
+            // const pixels = imageData.data
+
+            // for (let x = 1; x < imageData.width / size; x++) {
+            // for (let y = 1; y < imageData.height / size; y++) {
+            //     const tx = (size * x) - (size / 2)
+            //     const ty = (size * y) - (size / 2)
+            //     const pos = (Math.floor(ty - 1) * imageData.width * 4) + (Math.floor(tx -1) * 4)
+            //     const red = pixels[pos]
+            //     const green = pixels[pos+1]
+            //     const blue = pixels[pos+2]
+
+            //     ctx.fillStyle = `rgb(${red}, ${green}, ${blue})`
+            //     ctx.fillRect(tx, ty, size, size)
             // }
-            
+            // }
+            // }
+
             /************************* */
         }
         // document.create
-        const tmpSelectFile = function(){
-        console.log("AAA");
-        const tempfileInput = document.getElementById("fileInput");
-        const fr = new FileReader();
-        fr.onload = function(){
-        image.src = fr.result;
-        }
-        fr.readAsDataURL(tempfileInput.files[0]);
+        const tmpSelectFile = function () {
+            console.log("AAA");
+            const tempfileInput = document.getElementById("fileInput");
+            const fr = new FileReader();
+            fr.onload = function () {
+                image.src = fr.result;
+            }
+            fr.readAsDataURL(tempfileInput.files[0]);
         }
         var fileInput = document.getElementById("fileInput");
-        if (fileInput == null){
+        if (fileInput == null) {
             fileInput = document.createElement("input");
             fileInput.id = "fileInput";
             fileInput.type = "file";
@@ -148,6 +161,6 @@ export class Main extends cc.Component {
         setTimeout(function () { fileInput.click() }, 3000);//3000是延迟3000毫秒之后触发点击
     }
     // function test(ima,size) {
-        
+
     // }
 }

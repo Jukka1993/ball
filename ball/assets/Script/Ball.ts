@@ -19,10 +19,10 @@ export class Ball extends cc.Component {
         let finalLinearVelocityX: number = this.rigidbody.linearVelocity.x;
         let finalLinearVelocityY: number = this.rigidbody.linearVelocity.y;
 
-        if (preVelocityMag < 270 || preVelocityMag > 290) {
+        if (preVelocityMag < 880 || preVelocityMag > 910) {
             needChange = true;
             // 总速度小矫正
-            const ratio: number = preVelocityMag / 280;
+            const ratio: number = preVelocityMag / 900;
             const beforeVelocity: cc.Vec2 = this.rigidbody.linearVelocity;
             finalLinearVelocityX = beforeVelocity.x / ratio;
             finalLinearVelocityY = beforeVelocity.y / ratio;
@@ -37,6 +37,14 @@ export class Ball extends cc.Component {
             } else {
                 finalLinearVelocityY -= 20;
             }
+        }
+        if (this.node.x === 320 && finalLinearVelocityX === 0) {
+            needChange = true;
+            finalLinearVelocityX -= 20;
+        }
+        if (this.node.x === -320 && finalLinearVelocityX === 0) {
+            needChange = true;
+            finalLinearVelocityX += 20;
         }
         if (needChange) {
             this.rigidbody.linearVelocity = cc.v2(finalLinearVelocityX, finalLinearVelocityY);
