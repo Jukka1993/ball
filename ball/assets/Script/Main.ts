@@ -18,9 +18,9 @@ export class Main extends cc.Component {
         this.touchBoard = cc.find("Canvas/TouchBoard");
         this.rigidBoard = cc.find("Canvas/Board");
         this.beginBoard = cc.find("Canvas/BeginTouchBoard");
-        this.beginBoard.on("click", this.onBeginBoard, this);
-        this.beginBoard.on(cc.Node.EventType.TOUCH_MOVE, this.onBeginMove, this);
-        this.beginBoard.on(cc.Node.EventType.TOUCH_START, this.onBeginMove, this);
+        this.beginBoard.on(cc.Node.EventType.TOUCH_END, this.onBeginBoard, this);
+        // this.beginBoard.on(cc.Node.EventType.TOUCH_MOVE, this.onBeginMove, this);
+        // this.beginBoard.on(cc.Node.EventType.TOUCH_START, this.onBeginMove, this);
         this.touchBoard.on(cc.Node.EventType.TOUCH_MOVE, this.onTouchMove, this);
         this.touchBoard.on(cc.Node.EventType.TOUCH_END, this.onTouchEnd, this);
     }
@@ -38,12 +38,53 @@ export class Main extends cc.Component {
         }
         this.rigidBoard.getComponent(cc.RigidBody).linearVelocity = cc.v2(effectiveX * 30, effectiveY * 30);
     }
-    private onBeginMove(): void {
+    private onBeginBoard(touch: cc.Event.EventTouch): void {
+        const pointStart: cc.Vec2 = this.visualBoard.convertToWorldSpaceAR(cc.v2(0, 0));
+        const pointEnd: cc.Vec2 = touch.getLocation();
+        console.log(pointStart, pointEnd);
+        let lineFunc: Function = null;
+        let lineState: number = 0;  // 线状态 斜线为0,横线为-1,竖线为1
+        if (Math.abs(pointEnd.x - pointStart.x) < 1) {// 竖直的线
+            lineState = 1;
+            lineFunc = function (point: { x?: number; y?: number }): cc.Vec2 {
+                if (point.y === undefined) {
+                    return null;
+                }
+                return cc.v2(pointEnd.x, point.y);
+            };
+        } else if (Math.abs(pointEnd.y - pointStart.y) < 1) {// 水平的线
+            lineState = -1;
+            lineFunc = function (point: { x?: number; y?: number }): cc.Vec2 {
+                if (point.x === undefined) {
+                    return null;
+                }
+                return cc.v2(point.x, pointEnd.y);
+            };
+        } else {// 斜线
+            lineState = 0;
+            lineFunc = function (point: { x?: number; y?: number }): cc.Vec2 {
+                if (point.x !== undefined) {
+                    // tslint:disable-next-line: max-line-length
+                    return cc.v2(point.x, pointStart.y - (pointStart.x - point.x) * (pointStart.y - pointEnd.y) / (pointStart.x - pointEnd.x));
+                } else {
+                    // tslint:disable-next-line: max-line-length
+                    return cc.v2(pointStart.x - (pointStart.x - point.y) * (pointStart.x - pointEnd.x) / (pointStart.y - pointEnd.y), point.y);
+                }
+            };
+        }
+        const topPos: cc.Vec2 = cc.find("Canvas/outwalls/outwallTop").convertToWorldSpaceAR(cc.v2(0, 0));
+        let aidBallPos: cc.Vec2 = lineFunc({ y: topPos.y });
+        if (aidBallPos.x < 0) {
+            aidBallPos = lineFunc({ x: 0 });
+        } else if (aidBallPos.x > 640) {
+            aidBallPos = lineFunc({ x: 640 });
+        }
+        this.helpBallNode[0].position = this.node.convertToNodeSpaceAR(aidBallPos);
 
     }
-    private onBeginBoard(): void {
-        this.beginBoard.active = false;
-    }
+    // private onBeginBoard(): void {
+    //     // this.beginBoard.active = false;
+    // }
     private onTouchMove(touch: cc.Event.EventTouch): void {
         const newX: number = this.visualBoard.x + touch.getDeltaX();
         const newY: number = this.visualBoard.y + touch.getDeltaY();
